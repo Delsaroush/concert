@@ -4,16 +4,25 @@ from .models import Concert, Ticket
 
 from django.core.paginator import Paginator
 
+from django.shortcuts import render
+from .models import Concert
+
 def concert_list(request):
     concerts = Concert.objects.all()
-    paginator = Paginator(concerts, 10)  # Show 10 concerts per page
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    return render(request, 'concert_list.html', {'concerts': concerts})
 
-    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return render(request, 'concert_list.html', {'concerts': page_obj})
+def filter_concerts(request):
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+    concerts = Concert.objects.all()
 
-    return render(request, 'concert_list.html', {'concerts': page_obj})
+    if start_date:
+        concerts = concerts.filter(date__gte=start_date)
+    if end_date:
+        concerts = concerts.filter(date__lte=end_date)
+
+    return render(request, 'concert_list.html', {'concerts': concerts})
+
 
 
 from django.shortcuts import render, get_object_or_404, redirect
@@ -68,6 +77,9 @@ def book_ticket(request, concert_id):
 from django.shortcuts import render
 from .models import Concert
 
+from django.shortcuts import render
+from .models import Concert
+
 def filter_concerts(request):
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
@@ -79,6 +91,7 @@ def filter_concerts(request):
         concerts = concerts.filter(date__lte=end_date)
 
     return render(request, 'concert_list.html', {'concerts': concerts})
+
 
 
 
