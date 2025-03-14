@@ -61,19 +61,37 @@ def concert_delete(request, id):
 
 from django.contrib import messages
 
+from django.shortcuts import get_object_or_404, redirect
+from .models import Concert
+
+from django.shortcuts import get_object_or_404, render, redirect
+from .models import Concert
+
 def book_ticket(request, concert_id):
+    # Get the concert object or return a 404 error if not found
     concert = get_object_or_404(Concert, id=concert_id)
+
     if request.method == 'POST':
+        # Handle POST request (form submission)
         purchaser_name = request.POST.get('purchaser_name')
+        payment_details = request.POST.get('payment_details')
+
+        # Check if tickets are available
         if concert.available_tickets > 0:
             concert.available_tickets -= 1
             concert.save()
-            messages.success(request, 'Ticket successfully booked!')
+            # Optionally process payment details here
+            return redirect('success_page')  # Redirect to success page
         else:
-            messages.error(request, 'Sorry, no tickets are available.')
+            # If no tickets are available, render the form with an error
+            return render(request, 'book_ticket.html', {
+                'concert': concert,
+                'error': 'No tickets available!',
+            })
 
-        return redirect('concert_list')
+    # Render the form for a GET request
     return render(request, 'book_ticket.html', {'concert': concert})
+
 from django.shortcuts import render
 from .models import Concert
 
@@ -91,6 +109,9 @@ def filter_concerts(request):
         concerts = concerts.filter(date__lte=end_date)
 
     return render(request, 'concert_list.html', {'concerts': concerts})
+def success_page(request):
+    return render(request, 'success.html')
+
 
 
 

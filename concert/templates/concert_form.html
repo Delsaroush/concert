@@ -1,26 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="">
 <head>
     <title>Concert Form</title>
+    <style>
+        /* Basic modal styles */
+        .modal {
+            display: none; /* Hide modal by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 50%; /* Adjust as needed */
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 18px;
+            color: red;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .button-group button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .confirm-btn {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .cancel-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ concert.name|default:"Add New Concert" }}</h1>
-    <form method="post">
-        {% csrf_token %}
-        <label for="name">Concert Name:</label><br>
-        <input type="text" id="name" name="name" value="{{ concert.name|default:'' }}" required><br><br>
+    <h1>Upcoming Concerts</h1>
 
-        <label for="date">Concert Date and Time:</label><br>
-        <input type="datetime-local" id="date" name="date" value="{{ concert.date|date:'Y-m-d\\TH:i' }}" required><br><br>
+    <!-- Book Ticket Link -->
+    <a href="#" class="book-ticket-btn">Book Ticket</a>
 
-        <label for="venue">Concert Venue:</label><br>
-        <input type="text" id="venue" name="venue" value="{{ concert.venue|default:'' }}" required><br><br>
+    <!-- Modal -->
+    <div id="ticket-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span> <!-- Close Button -->
 
-        <label for="available_tickets">Available Tickets:</label><br>
-        <input type="number" id="available_tickets" name="available_tickets" value="{{ concert.available_tickets|default:0 }}" required><br><br>
+            <h1>Book Ticket for {{ concert.name|default:"Concert Name" }}</h1>
+            <form method="post">
+                {% csrf_token %}
+                <!-- Concert Details -->
+                <p><strong>Concert:</strong> {{ concert.name }}</p>
+                <p><strong>Date:</strong> {{ concert.date|date:"F j, Y, g:i a" }}</p>
+                <p><strong>Venue:</strong> {{ concert.venue }}</p>
+                <p><strong>Available Tickets:</strong> {{ concert.available_tickets }}</p>
 
-        <button type="submit">Save</button>
-        <a href="{% url 'concert_list' %}">Cancel</a>
-    </form>
+                <!-- User Details -->
+                <label for="purchaser_name">Your Name:</label><br>
+                <input type="text" id="purchaser_name" name="purchaser_name" required><br><br>
+
+                <!-- Payment Details -->
+                <label for="payment_details">Payment Details (Card Number):</label><br>
+                <input type="text" id="payment_details" name="payment_details" required><br><br>
+
+                <!-- Confirm and Cancel Buttons -->
+                <div class="button-group">
+                    <button type="submit" class="confirm-btn">Confirm Booking</button>
+                    <button type="button" class="cancel-btn" id="cancel-booking">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to handle modal
+        const modal = document.getElementById('ticket-modal');
+        const openModalBtn = document.querySelector('.book-ticket-btn');
+        const closeModalBtn = document.querySelector('.close-btn');
+        const cancelBookingBtn = document.getElementById('cancel-booking');
+
+        // Open modal when the button is clicked
+        openModalBtn.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent default link behavior
+            modal.style.display = 'block';
+        });
+
+        // Close modal when the close button or "Cancel" button is clicked
+        closeModalBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+        cancelBookingBtn.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside of the modal content
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
