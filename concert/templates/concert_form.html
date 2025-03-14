@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Concert Form</title>
+</head>
+<body>
+    <h1>{{ concert.name|default:"Add New Concert" }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <label for="name">Concert Name:</label><br>
+        <input type="text" id="name" name="name" value="{{ concert.name|default:'' }}" required><br><br>
+
+        <label for="date">Concert Date and Time:</label><br>
+        <input type="datetime-local" id="date" name="date" value="{{ concert.date|date:'Y-m-d\\TH:i' }}" required><br><br>
+
+        <label for="venue">Concert Venue:</label><br>
+        <input type="text" id="venue" name="venue" value="{{ concert.venue|default:'' }}" required><br><br>
+
+        <label for="available_tickets">Available Tickets:</label><br>
+        <input type="number" id="available_tickets" name="available_tickets" value="{{ concert.available_tickets|default:0 }}" required><br><br>
+
+        <button type="submit">Save</button>
+        <a href="{% url 'concert_list' %}">Cancel</a>
+    </form>
+</body>
+</html>

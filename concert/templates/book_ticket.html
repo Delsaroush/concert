@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<h1>Book Ticket for {{ concert.name }}</h1>
+<p>Date: {{ concert.date }}</p>
+<p>Venue: {{ concert.venue }}</p>
+<p>Available Tickets: {{ concert.available_tickets }}</p>
+{% if error %} <p style="color:red;">{{ error }}</p> {% endif %}
+
+
+<a href="{% url 'concert_list' %}">Back to Concert List</a>
+<div id="loading" style="display:none;">Processing your request...</div>
+<script>
+document.querySelector('form').addEventListener('submit', function() {
+    document.getElementById('loading').style.display = 'block';
+});
+ window.onload = function() {
+        const availableTickets = {{ concert.available_tickets }};
+        const bookButton = document.querySelector('button[type="submit"]');
+
+        if (availableTickets === 0) {
+            bookButton.disabled = true;
+            bookButton.textContent = 'Sold Out';
+            bookButton.style.backgroundColor = '#ccc';
+            bookButton.style.cursor = 'not-allowed';    }
+    };
+ document.getElementById('filter-btn').addEventListener('click', function() {
+    const startDate = document.getElementById('start_date').value;
+    const endDate = document.getElementById('end_date').value;
+
+    fetch(`/filter_concerts?start_date=${startDate}&end_date=${endDate}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.text();
+        })
+        .then(data => {
+            document.getElementById('concert-results').innerHTML = data;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('concert-results').innerHTML = '<p style="color:red;">An error occurred while fetching concerts.</p>';
+        });
+});
+
+</script>
+
+
+
+</body>
+</html>

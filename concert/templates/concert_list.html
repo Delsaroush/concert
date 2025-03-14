@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <style>
+        <nav style="background: #444; color: white; padding: 10px; text-align: center;">
+    <a href="/" style="color: white; margin: 10px;">Home</a>
+    <a href="{% url 'concert_create' %}" style="color: white; margin: 10px;">Add Concert</a>
+</nav>
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+    <title>Concert List</title>
+</head>
+
+<body>
+    <h1>Upcoming Concerts</h1>
+
+
+<div id="concert-results">
+    <!-- Results will be dynamically loaded here -->
+</div>
+
+<ul>
+    {% for concert in concerts %}
+        <li>
+            <strong>{{ concert.name }}</strong><br>
+            Date: {{ concert.date }}<br>
+            Venue: {{ concert.venue }}
+        </li>
+    {% empty %}
+        <li>No concerts found!</li>
+    {% endfor %}
+</ul>
+    <form id="filter-form" method="get" action="{% url 'filter_concerts' %}">
+    <label for="start_date">Start Date:</label>
+    <input type="date" name="start_date" id="start_date" value="">
+    <label for="end_date">End Date:</label>
+    <input type="date" name="end_date" id="end_date" value="">
+    <button type="button" id="filter-btn">Filter</button>
+</form>
+
+
+<div class="pagination">
+    <span class="step-links">
+        {% if concerts.has_previous %}
+            <a href="?page={{ concerts.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        Page {{ concerts.number }} of {{ concerts.paginator.num_pages }}
+
+        {% if concerts.has_next %}
+            <a href="?page={{ concerts.next_page_number }}">Next</a>
+        {% endif %}
+    </span>
+</div>
+<script>
+document.getElementById('filter-btn').addEventListener('click', function() {
+    const startDate = document.getElementById('start_date').value;
+    const endDate = document.getElementById('end_date').value;
+
+    fetch(`/filter_concerts?start_date=${startDate}&end_date=${endDate}`)
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('concert-results').innerHTML = data;
+        })
+        .catch(error => console.error('Error:', error));
+});
+</script>
+
+</body>
+</html>
+

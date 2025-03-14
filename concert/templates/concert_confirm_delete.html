@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Delete</title>
+</head>
+<body>
+    <h1>Delete Concert</h1>
+    <p>Are you sure you want to delete the concert: <strong>{{ concert.name }}</strong>?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, Delete</button>
+        <a href="{% url 'concert_list' %}">Cancel</a>
+    </form>
+</body>
+</html>
