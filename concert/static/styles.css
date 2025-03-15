@@ -42,3 +42,25 @@ a {
     margin-top: 10px;
     color: #0288d1;
 }
+#loading-spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000; /* Ensure it appears on top */
+}
+
+#loading-spinner img {
+    width: 50px; /* Adjust size */
+    height: 50px;
+    animation: spin 1s linear infinite; /* Optional spinner animation */
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
