@@ -14,9 +14,12 @@
             margin: 50px auto;
             max-width: 600px;
             background: #fff;
-            padding: 20px;
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .form-control, .form-select {
+            margin-bottom: 15px;
         }
         .btn-submit {
             background-color: #007bff;
@@ -32,33 +35,86 @@
         .btn-submit:hover {
             background-color: #0056b3;
         }
+        .payment-code {
+            display: none;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f1f1f1;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+        }
+        h1, p {
+            text-align: center;
+        }
     </style>
-    <title>Book Ticket Form</title>
+    <title>Book Ticket</title>
 </head>
-
 <body>
     <div class="container">
-        <h1>Book Your Tickets</h1>
-        <p><strong>Concert:</strong> Rock Symphony</p>
-        <p><strong>Date:</strong> March 18, 2025, 7 p.m.</p>
-        <p><strong>Venue:</strong> Nairobi Arena</p>
-        <p><strong>Ticket Price:</strong> $50</p>
+        <!-- Display concert details dynamically -->
+        <h1>Book Your Ticket</h1>
+        <p><strong>Concert:</strong> {{ concert.name }}</p>
+        <p><strong>Date:</strong> {{ concert.date }}</p>
+        <p><strong>Venue:</strong> {{ concert.venue }}</p>
+        <p><strong>Ticket Price:</strong> ${{ concert.price }}</p>
 
-        <form action="/submit_booking" method="POST">
-            <label for="name">Full Name:</label>
-            <input type="text" id="name" name="name" class="form-control" required>
+        <!-- Booking form -->
+       <form action="/pay/" method="POST">
+    {% csrf_token %}
+    <input type="hidden" name="concert_id" value="{{ concert.id }}">
+    <input type="hidden" name="concert_name" value="{{ concert.name }}">
+    <input type="hidden" name="ticket_price" value="{{ concert.price }}">
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" class="form-control" required>
+    <label for="name">Full Name:</label>
+    <input type="text" id="name" name="name" class="form-control" placeholder="Enter your full name" required>
 
-            <label for="tickets">Number of Tickets:</label>
-            <input type="number" id="tickets" name="tickets" class="form-control" min="1" max="150" required>
+    <label for="email">Email Address:</label>
+    <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email" required>
 
-            <label for="comments">Additional Notes (optional):</label>
-            <textarea id="comments" name="comments" class="form-control" rows="3"></textarea>
+    <label for="phone">Phone Number:</label>
+    <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter your phone number" required>
 
-            <button type="submit" class="btn-submit">Confirm Booking</button>
-        </form>
+    <label for="tickets">Number of Tickets:</label>
+    <input type="number" id="tickets" name="tickets" class="form-control" min="1" placeholder="Number of tickets" required>
+
+    <label for="payment">Payment Method:</label>
+    <select id="payment" name="payment_method" class="form-select" required>
+        <option value="" disabled selected>Select Payment Method</option>
+        <option value="paypal">PayPal</option>
+        <option value="visa">Visa</option>
+        <option value="mpesa">Mpesa</option>
+        <option value="debit">Debit Card</option>
+    </select>
+
+    <button type="submit" class="btn-submit">Continue to Pay</button>
+</form>
+
     </div>
+
+    <script>
+        function showPaymentCode() {
+            const paymentMethod = document.getElementById('payment').value;
+            const paymentCodeSection = document.getElementById('payment-code-section');
+            const paymentCodeText = document.getElementById('payment-code-text');
+
+            // Display payment instructions based on the selected method
+            if (paymentMethod === "paypal") {
+                paymentCodeText.innerHTML = "Pay directly using PayPal. Redirecting to PayPal payment page...";
+                paymentCodeSection.style.display = "block";
+            } else if (paymentMethod === "visa") {
+                paymentCodeText.innerHTML = "Enter your Visa card details at checkout to complete your payment.";
+                paymentCodeSection.style.display = "block";
+            } else if (paymentMethod === "mpesa") {
+                paymentCodeText.innerHTML = "Use Mpesa Paybill Number 123456 and enter 'CONCERT' as the account reference.";
+                paymentCodeSection.style.display = "block";
+            } else if (paymentMethod === "debit") {
+                paymentCodeText.innerHTML = "Enter your Debit Card details at checkout to complete your payment.";
+                paymentCodeSection.style.display = "block";
+            } else {
+                paymentCodeSection.style.display = "none";
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin: 50px auto;
+            max-width: 600px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .btn-submit {
+            background-color: #28a745;
+            color: white;
+            display: block;
+            width: 100%;
+            padding: 10px 0;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .btn-submit:hover {
+            background-color: #218838;
+        }
+        .payment-instructions {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            color: #333;
+        }
+        .currency-select {
+            margin-bottom: 15px;
+        }
+    </style>
+    <title>Payment Page</title>
+    <script>
+        // Currency conversion rates
+        const conversionRates = {
+            USD: 1,        // Base price in USD
+            GBP: 0.73,     // Example: 1 USD = 0.73 GBP
+            KES: 110.50    // Example: 1 USD = 110.50 KES
+        };
+
+        function updateCurrency() {
+            const basePrice = parseFloat(document.getElementById('base-price').value);
+            const selectedCurrency = document.getElementById('currency').value;
+            const conversionRate = conversionRates[selectedCurrency];
+            const convertedPrice = (basePrice * conversionRate).toFixed(2);
+
+            // Update the total price display
+            document.getElementById('total-price').textContent = `${convertedPrice} ${selectedCurrency}`;
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Complete Your Payment</h1>
+        <p><strong>Concert:</strong> Rock Symphony</p>
+        <p><strong>Number of Tickets:</strong> 1</p>
+
+        <!-- Currency Selection -->
+        <div class="currency-select">
+            <label for="currency">Choose Currency:</label>
+            <select id="currency" class="form-select" onchange="updateCurrency()">
+                <option value="USD" selected>USD (Dollars)</option>
+                <option value="GBP">GBP (Pounds)</option>
+                <option value="KES">KES (Kenyan Shillings)</option>
+            </select>
+        </div>
+
+        <!-- Ticket Price -->
+        <input type="hidden" id="base-price" value="50"> <!-- Base price in USD -->
+        <p><strong>Total Price:</strong> <span id="total-price">50.00 USD</span></p>
+
+        <div id="payment-section">
+            <!-- Mpesa Payment Example -->
+            <div class="payment-instructions">
+                <p><strong>Mpesa Payment:</strong></p>
+                <p>Send the total amount to Paybill 123456 and use "CONCERT" as the account number.</p>
+                <form action="/confirm_mpesa/" method="POST">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="ibzBgyKfZ7xJtNuyDbqZXhHBBMQwpUkWtszOWovj8SQLJM4jdn8111BBMkaRcwlx">
+                    <label for="transaction_id">Transaction ID:</label>
+                    <input type="text" id="transaction_id" name="transaction_id" class="form-control" required>
+                    <button type="submit" class="btn-submit">Confirm Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

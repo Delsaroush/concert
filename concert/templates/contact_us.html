@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="/styles.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+
+        /* Navigation Bar Styles */
+        nav {
+            background: #444;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        nav a:hover {
+            text-decoration: underline;
+            color: #ffc107;
+        }
+
+        /* Form Container Styles */
+        .container {
+            background: #fff;
+            max-width: 600px;
+            margin: 40px auto;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            text-align: left;
+        }
+        h1 {
+            text-align: center;
+            color: #444;
+            margin-bottom: 20px;
+        }
+
+        /* Form Input Styles */
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border 0.3s ease;
+        }
+        input:focus, textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        /* Button Styles */
+        button {
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Decorative Elements */
+        .decorative-line {
+            height: 3px;
+            background: linear-gradient(to right, #ffc107, #007bff);
+            margin: 20px 0;
+        }
+        .contact-info {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+        }
+        .contact-info p {
+            margin: 5px 0;
+        }
+    </style>
+    <title>Contact Us</title>
+</head>
+<body>
+    <h1>Contact Us</h1>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/my_bookings/">My Bookings</a>
+        <a href="/contact_us/">Contact Us</a>
+    </nav>
+
+    <div class="container">
+        <form action="/submit_contact" method="POST">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+            <label for="email">Your Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" rows="4" placeholder="Write your message" required></textarea>
+
+            <button type="submit">Send</button>
+        </form>
+
+        <!-- Decorative Line -->
+        <div class="decorative-line"></div>
+
+        <!-- Contact Info Section -->
+        <div class="contact-info">
+            <p><strong>Email:</strong> support@example.com</p>
+            <p><strong>Phone:</strong> +123-456-7890</p>
+            <p><strong>Office Hours:</strong> Mon-Fri, 9 AM - 5 PM</p>
+        </div>
+    </div>
+</body>
+</html>

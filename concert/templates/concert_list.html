@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(120deg, #f3f4f7, #d9e4f5);
+            margin: 0;
+            padding: 0;
+        }
         nav {
             background: #444;
             color: white;
@@ -19,99 +24,143 @@
         nav a:hover {
             text-decoration: underline;
         }
+        .container {
+            margin: 20px auto;
+            max-width: 900px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .concert-card {
+            display: flex;
+            flex-direction: row;
+            margin-bottom: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .concert-card img {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+        }
+        .concert-details {
+            padding: 15px;
+        }
+        .concert-details h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #444;
+        }
+        .concert-details p {
+            margin: 5px 0;
+        }
+        .book-button {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .book-button:hover {
+            background-color: #0056b3;
+        }
     </style>
     <title>Concert List</title>
+    <script>
+        const concerts = [
+            {
+                id: 1,
+                name: "Rock Symphony",
+                date: "March 18, 2025, 7 p.m.",
+                venue: "Nairobi Arena",
+                genre: "rock",
+                image: "https://via.placeholder.com/200x150?text=Rock+Concert"
+            },
+            {
+                id: 2,
+                name: "Acoustic Night",
+                date: "April 5, 2025, 6:30 p.m.",
+                venue: "Kenya Cultural Center",
+                genre: "acoustic",
+                image: "https://via.placeholder.com/200x150?text=Acoustic+Concert"
+            },
+            {
+                id: 3,
+                name: "Jazz & Blues Evening",
+                date: "May 22, 2025, 8 p.m.",
+                venue: "Westlands Theater",
+                genre: "jazz",
+                image: "https://via.placeholder.com/200x150?text=Jazz+Concert"
+            }
+        ];
+
+        function filterByGenre() {
+            const selectedGenre = document.getElementById("genre").value;
+            const resultsContainer = document.getElementById("concert-results");
+
+            resultsContainer.innerHTML = "";
+
+            const filteredConcerts = selectedGenre === "all"
+                ? concerts
+                : concerts.filter(concert => concert.genre === selectedGenre);
+
+            if (filteredConcerts.length === 0) {
+                resultsContainer.innerHTML = "<p style='color: red;'>No concerts available for the selected genre.</p>";
+                return;
+            }
+
+            filteredConcerts.forEach(concert => {
+                resultsContainer.innerHTML += `
+                    <div class="concert-card">
+                        <img src="${concert.image}" alt="${concert.name}">
+                        <div class="concert-details">
+                            <h3>${concert.name}</h3>
+                            <p><strong>Date:</strong> ${concert.date}</p>
+                            <p><strong>Venue:</strong> ${concert.venue}</p>
+                            <a href="/${concert.id}/book/" class="book-button">Book Ticket</a>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    </script>
 </head>
 
 <body>
-    <h1>Upcoming Concerts</h1>
-
     <nav>
         <a href="/">Home</a>
         <a href="/my_bookings/">My Bookings</a>
         <a href="/contact_us/">Contact Us</a>
     </nav>
 
-    <label for="genre">Genre:</label>
-    <select id="genre" name="genre">
-        <option value="all">All</option>
-        <option value="rock">Rock</option>
-        <option value="jazz">Jazz</option>
-        <option value="acoustic">Acoustic</option>
-    </select>
+    <div class="container">
+        <h1>Upcoming Concerts</h1>
 
-    <div id="loading-spinner" style="display:none;">
-        <img src="/static/loading.jpg" alt="Loading...">
+        <!-- Genre Filter -->
+        <label for="genre">Filter by Genre:</label>
+        <select id="genre" name="genre" class="form-select" onchange="filterByGenre()">
+            <option value="all">All</option>
+            <option value="rock">Rock</option>
+            <option value="jazz">Jazz</option>
+            <option value="acoustic">Acoustic</option>
+        </select>
+
+        <!-- Concert Results -->
+        <div id="concert-results">
+            <script>
+                filterByGenre();
+            </script>
+        </div>
     </div>
-
-    <div id="concert-results">
-        <ul>
-            <li>
-                <strong>Rock Symphony</strong><br>
-                Date: March 18, 2025, 7 p.m.<br>
-                Venue: Nairobi Arena<br>
-                <p id="countdown-rock">Time Remaining: 2 days, 5 hours</p>
-                <a href="/1/book/" aria-label="Book Ticket for Rock Symphony">Book Ticket</a>
-            </li>
-            <li>
-                <strong>Acoustic Night</strong><br>
-                Date: April 5, 2025, 6:30 p.m.<br>
-                Venue: Kenya Cultural Center<br>
-                <p id="countdown-acoustic">Time Remaining: 21 days, 10 hours</p>
-                <a href="/2/book/" aria-label="Book Ticket for Acoustic Night">Book Ticket</a>
-            </li>
-            <li>
-                <strong>Jazz &amp; Blues Evening</strong><br>
-                Date: May 22, 2025, 8 p.m.<br>
-                Venue: Westlands Theater<br>
-                <p id="countdown-jazz">Time Remaining: 68 days, 3 hours</p>
-                <a href="/3/book/" aria-label="Book Ticket for Jazz & Blues Evening">Book Ticket</a>
-            </li>
-        </ul>
-    </div>
-
-    <iframe
-        src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=Nairobi+Arena"
-        width="600"
-        height="450"
-        style="border:0;"
-        allowfullscreen=""
-        loading="lazy">
-    </iframe>
-
-    <label for="ticket_count">Tickets:</label>
-    <input type="number" id="ticket_count" name="ticket_count" min="1">
-
-    <!-- Pagination -->
-    <div class="pagination">
-        <button onclick="fetchPage('prev')">Previous</button>
-        <span>Page 1 of 3</span>
-        <button onclick="fetchPage('next')">Next</button>
-    </div>
-
-    <button id="filter-btn">Filter</button>
-
-    <script>
-        document.getElementById('filter-btn').addEventListener('click', function() {
-            document.getElementById('loading-spinner').style.display = 'block';
-            const startDate = document.getElementById('start_date')?.value || '';
-            const endDate = document.getElementById('end_date')?.value || '';
-
-            fetch(`/filter_concerts?start_date=${startDate}&end_date=${endDate}`)
-                .then(response => {
-                    document.getElementById('loading-spinner').style.display = 'none';
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.text();
-                })
-                .then(data => {
-                    document.getElementById('concert-results').innerHTML = data;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('concert-results').innerHTML =
-                        '<p style="color:red;">An error occurred while fetching concerts.</p>';
-                });
-        });
-    </script>
 </body>
 </html>

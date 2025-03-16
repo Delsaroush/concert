@@ -67,29 +67,10 @@ from .models import Concert
 from django.shortcuts import get_object_or_404, render, redirect
 from .models import Concert
 
-def book_ticket(request, concert_id):
-    # Get the concert object or return a 404 error if not found
-    concert = get_object_or_404(Concert, id=concert_id)
-
-    if request.method == 'POST':
-        # Handle POST request (form submission)
-        purchaser_name = request.POST.get('purchaser_name')
-        payment_details = request.POST.get('payment_details')
-
-        # Check if tickets are available
-        if concert.available_tickets > 0:
-            concert.available_tickets -= 1
-            concert.save()
-            # Optionally process payment details here
-            return redirect('success_page')  # Redirect to success page
-        else:
-            # If no tickets are available, render the form with an error
-            return render(request, 'book_ticket.html', {
-                'concert': concert,
-                'error': 'No tickets available!',
-            })
 
     # Render the form for a GET request
+def book_ticket(request, concert_id):
+    concert = get_object_or_404(Concert, id=concert_id)  # Fetch the selected concert
     return render(request, 'book_ticket.html', {'concert': concert})
 
 from django.shortcuts import render
@@ -110,8 +91,129 @@ def filter_concerts(request):
 
     return render(request, 'concert_list.html', {'concerts': concerts})
 def success_page(request):
-    return render(request, 'success.html')
+    return render(request, 'booking_successful.html')
 
+def booking_successful(request, concert_name):
+    return render(request, 'booking_successful.html', {'concert_name': concert_name})
+
+from django.shortcuts import redirect
+
+def process_booking(request):
+    # Logic to process booking
+    concert_name = 'Rock Symphony'  # Replace with dynamic data
+    return redirect('booking_successful', concert_name=concert_name)
+
+
+from django.shortcuts import render, redirect
+
+from django.shortcuts import render, redirect
+
+
+def submit_booking(request):
+    if request.method == 'POST':
+        concert_name = request.POST.get('concert_name')
+        tickets = request.POST.get('tickets')
+        payment_method = request.POST.get('payment_method')
+
+        # Simulate payment validation and booking success
+        if payment_method and concert_name and tickets:
+            # Example: Save booking data to the database (not implemented here)
+            return redirect('booking_successful', concert_name=concert_name)
+
+    # If something is missing, redirect back or show an error
+    return redirect('concert_list')
+def my_bookings(request):
+    # You can replace this with real booking data from the database.
+    bookings = [
+        {'concert_name': 'Rock Symphony', 'date': 'March 18, 2025', 'tickets': 2},
+        {'concert_name': 'Jazz & Blues Evening', 'date': 'May 22, 2025', 'tickets': 3},
+    ]
+
+    return render(request, 'my_bookings.html', {'bookings': bookings})
+
+def contact_us(request):
+    return render(request, 'contact_us.html')
+def pay(request):
+    if request.method == 'POST':
+        concert_name = request.POST.get('concert_name')
+        tickets = request.POST.get('tickets')
+        payment_method = request.POST.get('payment_method')
+        ticket_price = request.POST.get('ticket_price')
+
+        try:
+            # Validate ticket_price and calculate total price
+            ticket_price = float(ticket_price) if ticket_price else 0.0
+            tickets = int(tickets)
+            total_price = tickets * ticket_price
+
+            # Pass data to the payment page
+            context = {
+                'concert_name': concert_name,
+                'tickets': tickets,
+                'total_price': total_price,
+                'payment_method': payment_method,
+            }
+            return render(request, 'pay.html', context)
+
+        except ValueError:
+            # Handle errors for missing or invalid data
+            messages.error(request, 'Invalid data received. Please try again.')
+            return redirect('concert_list')
+
+    return redirect('concert_list')  # Fallback for GET requests
+def confirm_mpesa(request):
+    if request.method == 'POST':
+        transaction_id = request.POST.get('transaction_id')
+        concert_name = request.POST.get('concert_name')
+
+        # Simulate validation of the transaction ID
+        if transaction_id and transaction_id.startswith('MP'):
+            # Example: Assume the Mpesa transaction ID is valid
+            messages.success(request, f'Payment for {concert_name} was successful!')
+            return redirect('booking_successful', concert_name=concert_name)
+        else:
+            messages.error(request, 'Invalid Mpesa Transaction ID. Please try again.')
+            return redirect('pay')  # Redirect back to payment page if invalid
+
+    return redirect('concert_list')  # Fallback in case of GET request
+
+def process_payment(request):
+    if request.method == 'POST':
+        card_number = request.POST.get('card_number')
+        expiry = request.POST.get('expiry')
+        cvv = request.POST.get('cvv')
+        concert_name = request.POST.get('concert_name')
+
+        # Simulate card payment processing
+        if card_number and expiry and cvv:
+            # Example: Assume payment succeeds if card details are filled
+            messages.success(request, f'Payment for {concert_name} was successful!')
+            return redirect('booking_successful', concert_name=concert_name)
+        else:
+            messages.error(request, 'Invalid card details. Please try again.')
+            return redirect('pay')  # Redirect back to payment page if invalid
+
+    return redirect('concert_list')  # Fallback in case of GET request
+
+def submit_refund(request):
+    if request.method == 'POST':
+        transaction_id = request.POST.get('transaction_id')
+        refund_reason = request.POST.get('refund_reason')
+
+        # Simulate refund processing
+        if transaction_id and refund_reason:
+            # Example logic: check if the transaction ID is valid
+            if transaction_id.startswith('MP') or len(transaction_id) > 5:  # Example check
+                messages.success(request, 'Your refund request has been submitted successfully.')
+                # Add logic to process the refund in the system (e.g., flag transaction for refund)
+                return redirect('concert_list')
+            else:
+                messages.error(request, 'Invalid transaction ID. Please try again.')
+                return redirect('booking_successful', concert_name="Concert Name")
+
+    # Fallback for GET request
+    messages.error(request, 'Refund request failed. Please contact support.')
+    return redirect('concert_list')
 
 
 

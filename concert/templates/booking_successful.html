@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Booking Successful</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px auto;
+            max-width: 600px;
+        }
+        h1 {
+            color: #28a745;
+        }
+        p {
+            font-size: 18px;
+            color: #333;
+        }
+        a, button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            cursor: pointer;
+        }
+        button:hover, a:hover {
+            background-color: #0056b3;
+        }
+        .refund-btn {
+            background-color: #dc3545;
+        }
+        .refund-btn:hover {
+            background-color: #bd2130;
+        }
+    </style>
+</head>
+<body>
+    <h1>Booking Successful!</h1>
+    <p>Thank you for booking a ticket for {{ concert_name }}.</p>
+    <p><strong>Total Paid:</strong> ${{ total_price }}</p>
+
+    <a href="{% url 'concert_list' %}">Back to Concert List</a>
+    <button class="refund-btn" onclick="document.getElementById('refund-form').style.display = 'block';">Request a Refund</button>
+
+    <!-- Refund Form -->
+    <div id="refund-form" style="display:none; margin-top: 20px;">
+        <form action="/submit_refund/" method="POST">
+            <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+            <input type="hidden" name="transaction_id" value="{{ transaction_id }}">
+            <label for="refund-reason">Reason for Refund:</label>
+            <textarea id="refund-reason" name="refund_reason" rows="4" style="width: 100%; margin-top: 10px;" required></textarea>
+            <button type="submit" class="refund-btn">Submit Refund Request</button>
+        </form>
+    </div>
+</body>
+</html>
