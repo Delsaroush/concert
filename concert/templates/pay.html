@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="/styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <style>
         body {
@@ -32,35 +31,20 @@
         .btn-submit:hover {
             background-color: #218838;
         }
-        .payment-instructions {
+        .payment-section {
             margin: 20px 0;
-            padding: 15px;
-            background: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            color: #333;
-        }
-        .currency-select {
-            margin-bottom: 15px;
         }
     </style>
     <title>Payment Page</title>
     <script>
-        // Currency conversion rates
-        const conversionRates = {
-            USD: 1,        // Base price in USD
-            GBP: 0.73,     // Example: 1 USD = 0.73 GBP
-            KES: 110.50    // Example: 1 USD = 110.50 KES
-        };
+        function showPaymentMethod() {
+            // Hide all payment forms
+            const methods = document.querySelectorAll(".payment-method");
+            methods.forEach(method => method.style.display = "none");
 
-        function updateCurrency() {
-            const basePrice = parseFloat(document.getElementById('base-price').value);
-            const selectedCurrency = document.getElementById('currency').value;
-            const conversionRate = conversionRates[selectedCurrency];
-            const convertedPrice = (basePrice * conversionRate).toFixed(2);
-
-            // Update the total price display
-            document.getElementById('total-price').textContent = `${convertedPrice} ${selectedCurrency}`;
+            // Show the selected payment method form
+            const selectedMethod = document.getElementById("payment-method").value;
+            document.getElementById(selectedMethod).style.display = "block";
         }
     </script>
 </head>
@@ -70,32 +54,65 @@
         <p><strong>Concert:</strong> Rock Symphony</p>
         <p><strong>Number of Tickets:</strong> 1</p>
 
-        <!-- Currency Selection -->
-        <div class="currency-select">
-            <label for="currency">Choose Currency:</label>
-            <select id="currency" class="form-select" onchange="updateCurrency()">
-                <option value="USD" selected>USD (Dollars)</option>
-                <option value="GBP">GBP (Pounds)</option>
-                <option value="KES">KES (Kenyan Shillings)</option>
+        <!-- Payment Method Selection -->
+        <div class="payment-section">
+            <label for="payment-method">Choose Payment Method:</label>
+            <select id="payment-method" class="form-select" onchange="showPaymentMethod()">
+                <option value="" selected>Select...</option>
+                <option value="mpesa">Mpesa</option>
+                <option value="visa">Visa</option>
+                <option value="paypal">PayPal</option>
+                <option value="debit-card">Debit Card</option>
             </select>
         </div>
 
-        <!-- Ticket Price -->
-        <input type="hidden" id="base-price" value="50"> <!-- Base price in USD -->
-        <p><strong>Total Price:</strong> <span id="total-price">50.00 USD</span></p>
+        <!-- Mpesa Payment -->
+        <div id="mpesa" class="payment-method" style="display: none;">
+            <p><strong>Mpesa Payment:</strong></p>
+            <p>Send the total amount to Paybill 123456 and use "CONCERT" as the account number.</p>
+            <form action="/confirm_mpesa/" method="POST">
+                <label for="transaction_id">Transaction ID:</label>
+                <input type="text" id="transaction_id" name="transaction_id" class="form-control" required>
+                <button type="submit" class="btn-submit">Confirm Mpesa Payment</button>
+            </form>
+        </div>
 
-        <div id="payment-section">
-            <!-- Mpesa Payment Example -->
-            <div class="payment-instructions">
-                <p><strong>Mpesa Payment:</strong></p>
-                <p>Send the total amount to Paybill 123456 and use "CONCERT" as the account number.</p>
-                <form action="/confirm_mpesa/" method="POST">
-                    <input type="hidden" name="csrfmiddlewaretoken" value="ibzBgyKfZ7xJtNuyDbqZXhHBBMQwpUkWtszOWovj8SQLJM4jdn8111BBMkaRcwlx">
-                    <label for="transaction_id">Transaction ID:</label>
-                    <input type="text" id="transaction_id" name="transaction_id" class="form-control" required>
-                    <button type="submit" class="btn-submit">Confirm Payment</button>
-                </form>
-            </div>
+        <!-- Visa Payment -->
+        <div id="visa" class="payment-method" style="display: none;">
+            <p><strong>Visa Payment:</strong></p>
+            <form action="/confirm_visa/" method="POST">
+                <label for="card_number">Card Number:</label>
+                <input type="text" id="card_number" name="card_number" class="form-control" placeholder="xxxx-xxxx-xxxx-xxxx" required>
+                <label for="expiry_date">Expiry Date:</label>
+                <input type="text" id="expiry_date" name="expiry_date" class="form-control" placeholder="MM/YY" required>
+                <label for="cvv">CVV:</label>
+                <input type="text" id="cvv" name="cvv" class="form-control" placeholder="123" required>
+                <button type="submit" class="btn-submit">Confirm Visa Payment</button>
+            </form>
+        </div>
+
+        <!-- PayPal Payment -->
+        <div id="paypal" class="payment-method" style="display: none;">
+            <p><strong>PayPal Payment:</strong></p>
+            <form action="/confirm_paypal/" method="POST">
+                <label for="paypal_email">PayPal Email:</label>
+                <input type="email" id="paypal_email" name="paypal_email" class="form-control" placeholder="example@domain.com" required>
+                <button type="submit" class="btn-submit">Pay with PayPal</button>
+            </form>
+        </div>
+
+        <!-- Debit Card Payment -->
+        <div id="debit-card" class="payment-method" style="display: none;">
+            <p><strong>Debit Card Payment:</strong></p>
+            <form action="/confirm_debit/" method="POST">
+                <label for="card_number_debit">Card Number:</label>
+                <input type="text" id="card_number_debit" name="card_number" class="form-control" placeholder="xxxx-xxxx-xxxx-xxxx" required>
+                <label for="expiry_date_debit">Expiry Date:</label>
+                <input type="text" id="expiry_date_debit" name="expiry_date" class="form-control" placeholder="MM/YY" required>
+                <label for="cvv_debit">CVV:</label>
+                <input type="text" id="cvv_debit" name="cvv" class="form-control" placeholder="123" required>
+                <button type="submit" class="btn-submit">Confirm Debit Card Payment</button>
+            </form>
         </div>
     </div>
 </body>
