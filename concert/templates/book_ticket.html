@@ -50,7 +50,7 @@
 
         <!-- Booking form -->
         <form action="/pay/" method="POST">
-            <input type="hidden" name="csrfmiddlewaretoken" value="dRUM7AavsBSnXvA5lxnTnUGiIiPt3MQro8UZNqVzBmbpduaQVJ5VrEAiTQ9OQoR2">
+            {% csrf_token %}
             <input type="hidden" name="concert_id" value="1">
             <input type="hidden" name="concert_name" value="Rock Symphony">
             <input type="hidden" name="ticket_price" value="50.00">
@@ -72,4 +72,3 @@
     </div>
 </body>
 </html>
-

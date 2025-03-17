@@ -31,20 +31,21 @@
         .btn-submit:hover {
             background-color: #218838;
         }
-        .payment-section {
-            margin: 20px 0;
+        .payment-method {
+            display: none;
         }
     </style>
     <title>Payment Page</title>
     <script>
+        // Function to handle payment method visibility
         function showPaymentMethod() {
-            // Hide all payment forms
             const methods = document.querySelectorAll(".payment-method");
             methods.forEach(method => method.style.display = "none");
 
-            // Show the selected payment method form
             const selectedMethod = document.getElementById("payment-method").value;
-            document.getElementById(selectedMethod).style.display = "block";
+            if (selectedMethod) {
+                document.getElementById(selectedMethod).style.display = "block";
+            }
         }
     </script>
 </head>
@@ -67,10 +68,11 @@
         </div>
 
         <!-- Mpesa Payment -->
-        <div id="mpesa" class="payment-method" style="display: none;">
+        <div id="mpesa" class="payment-method">
             <p><strong>Mpesa Payment:</strong></p>
             <p>Send the total amount to Paybill 123456 and use "CONCERT" as the account number.</p>
             <form action="/confirm_mpesa/" method="POST">
+                {% csrf_token %}
                 <label for="transaction_id">Transaction ID:</label>
                 <input type="text" id="transaction_id" name="transaction_id" class="form-control" required>
                 <button type="submit" class="btn-submit">Confirm Mpesa Payment</button>
@@ -78,9 +80,10 @@
         </div>
 
         <!-- Visa Payment -->
-        <div id="visa" class="payment-method" style="display: none;">
+        <div id="visa" class="payment-method">
             <p><strong>Visa Payment:</strong></p>
             <form action="/confirm_visa/" method="POST">
+                {% csrf_token %}
                 <label for="card_number">Card Number:</label>
                 <input type="text" id="card_number" name="card_number" class="form-control" placeholder="xxxx-xxxx-xxxx-xxxx" required>
                 <label for="expiry_date">Expiry Date:</label>
@@ -92,9 +95,10 @@
         </div>
 
         <!-- PayPal Payment -->
-        <div id="paypal" class="payment-method" style="display: none;">
+        <div id="paypal" class="payment-method">
             <p><strong>PayPal Payment:</strong></p>
             <form action="/confirm_paypal/" method="POST">
+                {% csrf_token %}
                 <label for="paypal_email">PayPal Email:</label>
                 <input type="email" id="paypal_email" name="paypal_email" class="form-control" placeholder="example@domain.com" required>
                 <button type="submit" class="btn-submit">Pay with PayPal</button>
@@ -102,9 +106,10 @@
         </div>
 
         <!-- Debit Card Payment -->
-        <div id="debit-card" class="payment-method" style="display: none;">
+        <div id="debit-card" class="payment-method">
             <p><strong>Debit Card Payment:</strong></p>
             <form action="/confirm_debit/" method="POST">
+                {% csrf_token %}
                 <label for="card_number_debit">Card Number:</label>
                 <input type="text" id="card_number_debit" name="card_number" class="form-control" placeholder="xxxx-xxxx-xxxx-xxxx" required>
                 <label for="expiry_date_debit">Expiry Date:</label>

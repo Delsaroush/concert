@@ -67,6 +67,13 @@ TEMPLATES = [
         },
     },
 ]
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost',
+    'http://127.0.0.1',
+    'https://yourdomain.com'
+]
+
+CSRF_TRUSTED_ORIGINS = ['https://example.com']
 
 WSGI_APPLICATION = 'concertregistration.wsgi.application'
 

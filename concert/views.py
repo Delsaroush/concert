@@ -214,6 +214,15 @@ def submit_refund(request):
     # Fallback for GET request
     messages.error(request, 'Refund request failed. Please contact support.')
     return redirect('concert_list')
+from django.shortcuts import render
+
+def payment_view(request):
+    return render(request, 'payment_page.html')
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def test_view(request):
+    return HttpResponse('CSRF validation bypassed for debugging.')
 
 
 
